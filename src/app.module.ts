@@ -6,6 +6,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { UsersModule } from './users/users.module.js';
 import { TasksModule } from './tasks/tasks.module.js';
 import { TaskStepsModule } from './task-steps/task-steps.module.js';
+import { AuthModule } from './auth/auth.module.js';
 
 @Module({
   imports: [ConfigModule.forRoot({
@@ -35,7 +36,10 @@ import { TaskStepsModule } from './task-steps/task-steps.module.js';
 
     TasksModule,
 
-    TaskStepsModule,],
+    TaskStepsModule,
+
+    AuthModule,
+  AuthModule,],
   controllers: [AppController],
   providers: [AppService],
 })
