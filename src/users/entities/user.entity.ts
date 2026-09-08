@@ -25,6 +25,20 @@ export class User {
     })
     passwordHash: string;
 
+    @Column({
+        name: 'password_reset_token_hash',
+        type: 'varchar',
+        nullable: true,
+    })
+    passwordResetTokenHash: string | null;
+
+    @Column({
+        name: 'password_reset_expires_at',
+        type: 'timestamp',
+        nullable: true,
+    })
+    passwordResetExpiresAt: Date | null;
+
     @OneToMany('Task', 'user')
     tasks: Task[];
 

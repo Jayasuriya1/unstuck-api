@@ -7,6 +7,7 @@ import { UsersModule } from './users/users.module.js';
 import { TasksModule } from './tasks/tasks.module.js';
 import { TaskStepsModule } from './task-steps/task-steps.module.js';
 import { AuthModule } from './auth/auth.module.js';
+import { AiModule } from './ai/ai.module.js';
 
 @Module({
   imports: [ConfigModule.forRoot({
@@ -39,7 +40,8 @@ import { AuthModule } from './auth/auth.module.js';
     TaskStepsModule,
 
     AuthModule,
-  AuthModule,],
+  AuthModule,
+AiModule,],
   controllers: [AppController],
   providers: [AppService],
 })

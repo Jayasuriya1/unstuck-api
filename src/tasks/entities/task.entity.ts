@@ -60,6 +60,13 @@ export class Task {
     @OneToMany('TaskStep', 'task')
     steps: TaskStep[];
 
+    @Column({
+        name: 'ai_deconstructed',
+        type: 'boolean',
+        default: false,
+    })
+    aiDeconstructed: boolean;
+
     @CreateDateColumn({
         name: 'created_at',
     })

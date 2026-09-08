@@ -7,6 +7,7 @@ import {
     OneToMany,
     PrimaryGeneratedColumn,
     UpdateDateColumn,
+    JoinColumn
 } from 'typeorm';
 
 import type { Task } from '../../tasks/entities/task.entity.js';
@@ -51,8 +52,15 @@ export class TaskStep {
     estimatedSeconds: number | null;
 
     @Column({
+        name: 'actual_seconds',
         type: 'integer',
-        default: 0,
+        nullable: true,
+    })
+    actualSeconds: number | null;
+
+    @Column({
+        type: 'integer',
+        default: 1,
     })
     depth: number;
 
@@ -72,9 +80,16 @@ export class TaskStep {
     })
     taskId: string;
 
-    @ManyToOne(() => TaskStep, (step) => step.children, {
-        nullable: true,
-        onDelete: 'CASCADE',
+    @ManyToOne(
+        () => TaskStep,
+        (step) => step.children,
+        {
+            nullable: true,
+            onDelete: 'CASCADE',
+        },
+    )
+    @JoinColumn({
+        name: 'parent_step_id',
     })
     parentStep: TaskStep | null;
 
@@ -87,6 +102,13 @@ export class TaskStep {
 
     @OneToMany(() => TaskStep, (step) => step.parentStep)
     children: TaskStep[];
+
+    @Column({
+        name: 'ai_deconstructed',
+        type: 'boolean',
+        default: false,
+    })
+    aiDeconstructed: boolean;
 
     @CreateDateColumn({
         name: 'created_at',

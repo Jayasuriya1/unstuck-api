@@ -1,30 +1,30 @@
 import {
-    IsInt,
-    IsNotEmpty,
-    IsOptional,
-    IsString,
-    Min,
+  IsInt,
+  IsOptional,
+  IsString,
+  IsUUID,
+  Min,
 } from 'class-validator';
 
 export class CreateTaskStepDto {
-    @IsString()
-    @IsNotEmpty()
-    title: string;
+  @IsString()
+  title: string;
 
-    @IsOptional()
-    @IsString()
-    description?: string;
+  @IsOptional()
+  @IsString()
+  description?: string;
 
-    @IsOptional()
-    @IsInt()
-    @Min(1)
-    estimatedSeconds?: number;
+  @IsOptional()
+  @IsInt()
+  @Min(0)
+  estimatedSeconds?: number;
 
-    @IsOptional()
-    @IsString()
-    parentStepId?: string;
+  @IsOptional()
+  @IsInt()
+  @Min(0)
+  position?: number;
 
-    @IsInt()
-    @Min(0)
-    position: number;
+  @IsOptional()
+  @IsUUID()
+  parentStepId?: string;
 }

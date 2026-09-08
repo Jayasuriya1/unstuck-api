@@ -13,6 +13,14 @@ import { RegisterDto } from './dto/register.dto.js';
 
 import { JwtAuthGuard } from './guards/jwt-auth.guard.js';
 
+import {
+    ForgotPasswordDto,
+} from './dto/forgot-password.dto.js';
+
+import {
+    ResetPasswordDto,
+} from './dto/reset-password.dto.js';
+
 @Controller('auth')
 export class AuthController {
     constructor(
@@ -38,5 +46,19 @@ export class AuthController {
         };
     }) {
         return request.user;
+    }
+
+    @Post('forgot-password')
+    forgotPassword(
+        @Body() dto: ForgotPasswordDto,
+    ) {
+        return this.authService.forgotPassword(dto);
+    }
+
+    @Post('reset-password')
+    resetPassword(
+        @Body() dto: ResetPasswordDto,
+    ) {
+        return this.authService.resetPassword(dto);
     }
 }
