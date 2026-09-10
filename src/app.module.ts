@@ -11,27 +11,33 @@ import { AiModule } from './ai/ai.module.js';
 
 @Module({
   imports: [ConfigModule.forRoot({
-      isGlobal: true,
+    isGlobal: true,
+  }),
+
+  TypeOrmModule.forRootAsync({
+    inject: [ConfigService],
+
+    useFactory: (configService: ConfigService) => ({
+      type: 'postgres',
+
+      // host: configService.get<string>('DB_HOST'),
+      // port: configService.get<number>('DB_PORT'),
+
+      // username: configService.get<string>('DB_USERNAME'),
+      // password: configService.get<string>('DB_PASSWORD'),
+      // database: configService.get<string>('DB_NAME'),
+
+      url: configService.getOrThrow<string>('DATABASE_URL'),
+
+      ssl: {
+        rejectUnauthorized: false,
+      },
+
+      autoLoadEntities: true,
+
+      synchronize: true,
     }),
-
-    TypeOrmModule.forRootAsync({
-      inject: [ConfigService],
-
-      useFactory: (configService: ConfigService) => ({
-        type: 'postgres',
-
-        host: configService.get<string>('DB_HOST'),
-        port: configService.get<number>('DB_PORT'),
-
-        username: configService.get<string>('DB_USERNAME'),
-        password: configService.get<string>('DB_PASSWORD'),
-        database: configService.get<string>('DB_NAME'),
-
-        autoLoadEntities: true,
-
-        synchronize: true,
-      }),
-    }),
+  }),
 
     UsersModule,
 
@@ -40,9 +46,9 @@ import { AiModule } from './ai/ai.module.js';
     TaskStepsModule,
 
     AuthModule,
-  AuthModule,
-AiModule,],
+    AuthModule,
+    AiModule,],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule { }
