@@ -1,69 +1,44 @@
-import {
-    Injectable,
-} from '@nestjs/common';
-
-import {
-    ConfigService,
-} from '@nestjs/config';
-
-import nodemailer from 'nodemailer';
+import { Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import { Resend } from 'resend';
 
 @Injectable()
 export class MailService {
-    private readonly transporter;
+  private readonly resend: Resend;
 
-    constructor(
-        private readonly configService: ConfigService,
-    ) {
-        this.transporter =
-            nodemailer.createTransport({
-                host: this.configService.getOrThrow<string>(
-                    'SMTP_HOST',
-                ),
+  constructor(private readonly configService: ConfigService) {
+    this.resend = new Resend(
+      this.configService.getOrThrow<string>('RESEND_API_KEY'),
+    );
+  }
 
-                port: Number(
-                    this.configService.getOrThrow<string>(
-                        'SMTP_PORT',
-                    ),
-                ),
+  async sendPasswordResetEmail(
+    email: string,
+    resetUrl: string,
+  ) {
+    const fromEmail =
+      this.configService.get<string>('MAIL_FROM') ??
+      'onboarding@resend.dev';
 
-                secure: false,
+    await this.resend.emails.send({
+      from: fromEmail,
+      to: email,
+      subject: 'Reset your Unstuck password',
+      html: `
+        <h2>Reset your password</h2>
 
-                auth: {
-                    user: this.configService.getOrThrow<string>(
-                        'SMTP_USER',
-                    ),
+        <p>You requested a password reset for your Unstuck account.</p>
 
-                    pass: this.configService.getOrThrow<string>(
-                        'SMTP_PASSWORD',
-                    ),
-                },
-            });
-    }
+        <p>
+          <a href="${resetUrl}">
+            Reset your password
+          </a>
+        </p>
 
-    async sendPasswordResetEmail(
-        email: string,
-        resetUrl: string,
-    ) {
-        await this.transporter.sendMail({
-            from: this.configService.getOrThrow<string>(
-                'SMTP_USER',
-            ),
+        <p>This link will expire in 15 minutes.</p>
 
-            to: email,
-
-            subject:
-                'Reset your Unstuck password',
-
-            text: [
-                'You requested a password reset for your Unstuck account.',
-                '',
-                `Reset your password here: ${resetUrl}`,
-                '',
-                'This link expires in 15 minutes.',
-                '',
-                'If you did not request this, you can ignore this email.',
-            ].join('\n'),
-        });
-    }
+        <p>If you did not request this, you can safely ignore this email.</p>
+      `,
+    });
+  }
 }
